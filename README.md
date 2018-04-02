@@ -3,6 +3,8 @@
 AIL
 ===
 
+[![Join the chat at https://gitter.im/SteveClement/AIL-framework](https://badges.gitter.im/SteveClement/AIL-framework.svg)](https://gitter.im/SteveClement/AIL-framework?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Logo](./doc/logo/logo-small.png?raw=true "AIL logo")
 
 AIL framework - Framework for Analysis of Information Leaks
