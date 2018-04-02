@@ -3,13 +3,128 @@
 AIL
 ===
 
+[![Join the chat at https://gitter.im/SteveClement/AIL-framework](https://badges.gitter.im/SteveClement/AIL-framework.svg)](https://gitter.im/SteveClement/AIL-framework?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![Logo](./doc/logo/logo-small.png?raw=true "AIL logo")
 
 AIL framework - Framework for Analysis of Information Leaks
 
-AIL is a modular framework to analyse potential information leaks from unstructured data sources like pastes from Pastebin or similar services or unstructured data streams. AIL framework is flexible and can be extended to support other functionalities to mine sensitive information.
+AIL is a modular framework to analyse potential information leaks from unstructured data sources like pastes from Pastebin or similar services or unstructured data streams. AIL framework is flexible and can be extended to support other functionalities to mine or process sensitive information.
 
 ![Dashboard](./doc/screenshots/dashboard.png?raw=true "AIL framework dashboard")
+
+Features
+--------
+
+* Modular architecture to handle streams of unstructured or structured information
+* Default support for external ZMQ feeds, such as provided by CIRCL or other providers
+* Multiple feed support
+* Each module can process and reprocess the information already processed by AIL
+* Detecting and extracting URLs including their geographical location (e.g. IP address location)
+* Extracting and validating potential leak of credit cards numbers, credentials, ...
+* Extracting and validating email addresses leaked including DNS MX validation
+* Module for extracting Tor .onion addresses (to be further processed for analysis)
+* Keep tracks of duplicates (and diffing between each duplicate found)
+* Extracting and validating potential hostnames (e.g. to feed Passive DNS systems)
+* A full-text indexer module to index unstructured information
+* Statistics on modules and web
+* Real-time modules manager in terminal
+* Global sentiment analysis for each providers based on nltk vader module
+* Terms, Set of terms and Regex tracking and occurrence
+* Many more modules for extracting phone numbers, credentials and others
+* Alerting to [MISP](https://github.com/MISP/MISP) to share found leaks within a threat intelligence platform using [MISP standard](https://www.misp-project.org/objects.html#_ail_leak)
+
+Installation
+------------
+
+Type these command lines for a fully automated installation and start AIL framework:
+```bash
+git clone https://github.com/CIRCL/AIL-framework.git
+cd AIL-framework
+./installing_deps.sh
+cd var/www/
+./update_thirdparty.sh
+cd ~/AIL-framework/
+. ./AILENV/bin/activate
+cd bin/
+./LAUNCH.sh
+```
+
+The default [installing_deps.sh](./installing_deps.sh) is for Debian and Ubuntu based distributions. For Arch
+linux based distributions, you can replace it with [installing_deps_archlinux.sh](./installing_deps_archlinux.sh).
+
+There is also a [Travis file](.travis.yml) used for automating the installation that can be used to build and install AIL on other systems.
+
+Docker Quick Start (Ubuntu 16.04 LTS)
+------------
+
+1. Install Docker
+```bash
+sudo su
+apt-get install -y curl
+curl https://get.docker.com | /bin/bash
+```
+
+2. Type these commands to build the Docker image:
+```bash
+git clone https://github.com/CIRCL/ail-framework
+cd AIL-framework
+docker build -t ail-framework .
+```
+3. To start AIL on port 7000, type the following command below:
+```
+docker run -p 7000:7000 ail-framework
+```
+
+4. To debug the running container, type the following command and note the container name or identifier:
+```bash
+docker ps
+```
+
+After getting the name or identifier type the following commands:
+```bash
+docker exec -it CONTAINER_NAME_OR_IDENTIFIER bash
+cd /opt/ail
+```
+
+Install using Ansible
+---------------------
+
+Please check the [Ansible readme](ansible/README.md).
+
+Starting AIL web interface
+--------------------------
+
+To start the web interface, you first need to fetch the required JavaScript/CSS files:
+
+```bash
+cd $AILENV
+cd var/www/
+bash update_thirdparty.sh
+```
+
+and then you can start the web interface python script:
+
+```bash
+cd $AILENV
+cd var/www/
+./Flask_server.py
+```
+
+Eventually you can browse the status of the AIL framework website at the following URL:
+
+```
+http://localhost:7000/
+```
+
+HOWTO
+-----
+
+HOWTO are available in [HOWTO.md](HOWTO.md)
+
+
+Screenshots
+===========
 
 Trending charts
 ---------------
@@ -32,7 +147,7 @@ Terms manager and occurence
 
 ![Term-Manager](./doc/screenshots/terms-manager.png?raw=true "AIL framework termManager")
 
-## Top terms
+### Top terms
 
 ![Term-Top](./doc/screenshots/terms-top.png?raw=true "AIL framework termTop")
 ![Term-Plot](./doc/screenshots/terms-plot.png?raw=true "AIL framework termPlot")
@@ -40,137 +155,20 @@ Terms manager and occurence
 
 [AIL framework screencast](https://www.youtube.com/watch?v=1_ZrZkRKmNo)
 
-Features
---------
+Command line module manager
+---------------------------
 
-* Modular architecture to handle streams of unstructured or structured information
-* Default support for external ZMQ feeds, such as provided by CIRCL or other providers
-* Each module can process and reprocess the information already processed by AIL
-* Detecting and extracting URLs including their geographical location (e.g. IP address location)
-* Extracting and validating potential leak of credit cards numbers
-* Extracting and validating email addresses leaked including DNS MX validation
-* Module for extracting Tor .onion addresses (to be further processed for analysis)
-* Extracting and validating potential hostnames (e.g. to feed Passive DNS systems)
-* A full-text indexer module to index unstructured information
-* Modules and web statistics 
-* Global sentiment analysis for each providers based on nltk vader module
-* Terms tracking and occurrence
-* Many more modules for extracting phone numbers, credentials and others
+![Module-Manager](./doc/screenshots/module-manager.png?raw=true "AIL framework ModuleInformationV2.py")
 
-Installation
-------------
-
-Type these command lines for a fully automated installation and start AIL framework
-```
-git clone https://github.com/CIRCL/AIL-framework.git
-cd AIL-framework
-./installing_deps.sh
-cd var/www/
-./update_thirdparty.sh
-cd ~/AIL-framework/
-. ./AILENV/bin/activate
-cd bin/
-./LAUNCH.sh
-```
-The default [installing_deps.sh](./installing_deps.sh) is for Debian and Ubuntu based distributions. For Arch
-linux based distributions, you can replace it with [installing_deps_archlinux.sh](./installing_deps_archlinux.sh).
-
-There is also a [Travis file](.travis.yml) used for automating the installation that can be used to build and install AIL on other systems.
-
-
-Starting AIL web interface
---------------------------
-
-To start the web interface, you first need to fetch the required Javascript/CSS files:
-
-```
-cd $AILENV
-cd var/www/
-bash update_thirdparty.sh
-```
-
-and then you can start the web interface python script:
-
-```
-cd $AILENV
-cd var/www/
-Flask_server.py
-```
-
-Eventually you can browse the status of the AIL framework website at the following URL:
-
-        ``http://localhost:7000/``
-
-How to
-======
-
-How to feed the AIL framework
------------------------------
-
-For the moment, there are two different ways to feed AIL with data:
-
-1. Be a collaborator of CIRCL and ask to access our feed. It will be sent to the static IP your are using for AIL.
-
-2. You can setup [pystemon](https://github.com/CIRCL/pystemon) and use the custom feeder provided by AIL (see below).
-
-###Feeding AIL with pystemon
-AIL is an analysis tool, not a collector!
-However, if you want to collect some pastes and feed them to AIL, the procedure is described below.
-
-Nevertheless, moderate your queries!
-
-Here are the steps to setup pystemon and feed data to AIL:
-
-1. Clone the [pystemon's git repository](https://github.com/CIRCL/pystemon)
-
-2. Install its python dependencies inside your virtual environment
-
-3. Launch pystemon ``` ./pystemon ```
-
-4. Edit the file ```bin/feeder/pystemon-feeder.py``` and modify the pystemonpath path accordingly
-
-5. Launch pystemon-feeder ``` ./pystemon-feeder.py ```
-
-
-How to create a new module
---------------------------
-
-If you want to add a new processing or analysis module in AIL, follow these simple steps:
-
-1. Add your module name in [./bin/packages/modules.cfg](./bin/packages/modules.cfg) and subscribe to the Redis_Global at minimum.
-
-2. Use [./bin/template.py](./bin/template.py) as a sample module and create a new file in bin/ with the module name used in the modules.cfg configuration.
-
-How to contribute a module
---------------------------
-
-Feel free to fork the code, play with it, make some patches or add additional analysis modules.
-
-To contribute your module, feel free to pull your contribution.
-
-Overview and License
-====================
-
-
-Redis and LevelDB overview
---------------------------
-
-* Redis on TCP port 6379 - DB 1 - Paste meta-data
-*                          DB 0 - Cache hostname/dns
-* Redis on TCP port 6380 - Redis Pub-Sub only
-* Redis on TCP port 6381 - DB 0 - Queue and Paste content LRU cache
-* Redis on TCP port 6382 - DB 1-4 - Trending, terms and sentiments
-* LevelDB on TCP port <year> - Lines duplicate
-
-LICENSE
--------
+License
+=======
 
 ```
     Copyright (C) 2014 Jules Debra
-    Copyright (C) 2014-2016 CIRCL - Computer Incident Response Center Luxembourg (c/o smile, security made in Lëtzebuerg, Groupement d'Intérêt Economique)
-    Copyright (c) 2014-2016 Raphaël Vinot
-    Copyright (c) 2014-2016 Alexandre Dulaunoy
-    Copyright (c) 2016 Sami Mokaddem
+    Copyright (C) 2014-2018 CIRCL - Computer Incident Response Center Luxembourg (c/o smile, security made in Lëtzebuerg, Groupement d'Intérêt Economique)
+    Copyright (c) 2014-2018 Raphaël Vinot
+    Copyright (c) 2014-2018 Alexandre Dulaunoy
+    Copyright (c) 2016-2018 Sami Mokaddem
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
